@@ -18,6 +18,8 @@ public class FakeStoreProductService implements IProductService {
     public FakeStoreProductService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplateBuilder = restTemplateBuilder;
     }
+    
+    // testing changes
     @Override
     public GenericProductDto createProduct(GenericProductDto product) {
         RestTemplate restTemplate = restTemplateBuilder.build();
