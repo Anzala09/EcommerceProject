@@ -18,4 +18,7 @@ public class SelfProductServiceImpl implements IProductService {
     public List<GenericProductDto> getAllProducts() {
         return null;
     }
+    public GenericProductDto deleteProductById(Long id) {
+        return null;
+    }
 }
