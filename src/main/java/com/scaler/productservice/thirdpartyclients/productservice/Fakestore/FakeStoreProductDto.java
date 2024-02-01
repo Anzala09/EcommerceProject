@@ -1,4 +1,4 @@
-package com.scaler.productservice.Dtos;
+package com.scaler.productservice.thirdpartyclients.productservice.Fakestore;
 
 import lombok.Getter;
 import lombok.Setter;
