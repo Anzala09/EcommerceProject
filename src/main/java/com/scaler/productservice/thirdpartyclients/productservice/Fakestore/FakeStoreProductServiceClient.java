@@ -22,12 +22,15 @@ public class FakeStoreProductServiceClient  {
     private String fakeStoreApiUrl;
     @Value("${fakestore.api.paths.product}")
     private String fakeStoreProductApiPath;
-    private String getProductRequestUrl = fakeStoreApiUrl + fakeStoreProductApiPath + "/{id}";
-    private String createProductRequestUrl = fakeStoreApiUrl + fakeStoreProductApiPath;
-    private String getAllProductsRequestUrl = fakeStoreApiUrl + fakeStoreProductApiPath;
-    private String deleteProductRequestUrl = fakeStoreApiUrl + fakeStoreProductApiPath + "/{id}";
-    public FakeStoreProductServiceClient(RestTemplateBuilder restTemplateBuilder) {
+    private String specificProductRequestUrl;
+    private String productRequestsBaseUrl;
+
+    public FakeStoreProductServiceClient(RestTemplateBuilder restTemplateBuilder,
+                                         @Value("${fakestore.api.url}") String fakeStoreApiUrl,
+                                         @Value("${fakestore.api.paths.product}") String fakeStoreProductsApiPath) {
         this.restTemplateBuilder = restTemplateBuilder;
+        this.productRequestsBaseUrl  = fakeStoreApiUrl + fakeStoreProductsApiPath;
+        this.specificProductRequestUrl = fakeStoreApiUrl + fakeStoreProductsApiPath + "/{id}";
     }
 
     private GenericProductDto convertFakeStoreProductDtoToGenericProductDto(FakeStoreProductDto fakeStoreProductDto) {
@@ -44,7 +47,7 @@ public class FakeStoreProductServiceClient  {
     public FakeStoreProductDto createProduct(GenericProductDto product) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<FakeStoreProductDto> response = restTemplate.postForEntity(
-                createProductRequestUrl, product, FakeStoreProductDto.class);
+                productRequestsBaseUrl, product, FakeStoreProductDto.class);
 
         return response.getBody();
     }
@@ -53,8 +56,7 @@ public class FakeStoreProductServiceClient  {
         // ResponseEntity<List<FakeStoreProductDto>> response = restTemplate.getForEntity(
         //getAllProductsRequestUrl, List<FakeStoreProductDto.class>); doesnt works because of generics and erasure at run time
 
-        ResponseEntity<FakeStoreProductDto[]> response = restTemplate.getForEntity(
-                getAllProductsRequestUrl, FakeStoreProductDto[].class);
+        ResponseEntity<FakeStoreProductDto[]> response = restTemplate.getForEntity(productRequestsBaseUrl ,FakeStoreProductDto[].class);
 
         List<GenericProductDto> answer = new ArrayList<>();
 
@@ -64,8 +66,7 @@ public class FakeStoreProductServiceClient  {
     public FakeStoreProductDto getProductById(Long id) throws NotFoundException {
         // FakeStoreProductService fakeStoreProductService = new FakeStoreProductService();
         RestTemplate restTemplate = restTemplateBuilder.build(); //creates rest template obj
-        ResponseEntity<FakeStoreProductDto> response = restTemplate.getForEntity(
-                getProductRequestUrl, FakeStoreProductDto.class, id);
+        ResponseEntity<FakeStoreProductDto> response = restTemplate.getForEntity(specificProductRequestUrl, FakeStoreProductDto.class, id);
 
         FakeStoreProductDto fakeStoreProductDto = response.getBody();
         //  response.getStatusCode()
@@ -84,7 +85,7 @@ public class FakeStoreProductServiceClient  {
         ResponseExtractor<ResponseEntity<FakeStoreProductDto>> responseExtractor =
                 restTemplate.responseEntityExtractor(FakeStoreProductDto.class);
         ResponseEntity<FakeStoreProductDto> response = restTemplate.execute(
-                deleteProductRequestUrl, HttpMethod.DELETE, requestCallback, responseExtractor, id);
+                specificProductRequestUrl, HttpMethod.DELETE, requestCallback, responseExtractor, id);
 
         return response.getBody();
     }

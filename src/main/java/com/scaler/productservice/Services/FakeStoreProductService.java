@@ -32,7 +32,7 @@ public class FakeStoreProductService implements IProductService {
     public GenericProductDto createProduct(GenericProductDto product) {
 //        RestTemplate restTemplate = restTemplateBuilder.build();
 //        ResponseEntity<GenericProductDto> response = restTemplate.postForEntity(
-//                createProductRequestUrl, product, GenericProductDto.class);
+//                 productRequestsBaseUrl, product, GenericProductDto.class);
 //
 //        return response.getBody();
           return convertFakeStoreProductDtoToGenericProductDto(fakeStoreProductServiceClient.createProduct(product));
