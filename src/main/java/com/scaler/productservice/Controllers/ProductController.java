@@ -45,6 +45,5 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public void updateProductById() {
-
     }
 }
